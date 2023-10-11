@@ -1,11 +1,14 @@
 package com.phuket.tour.studio;
 
+import static com.phuket.tour.studio.audio.MyAudioRecord.writePCM;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -14,10 +17,13 @@ import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.phuket.tour.studio.audio.AudioTrackManager;
+import com.phuket.tour.studio.audio.MyAudioRecord;
 import com.phuket.tour.studio.databinding.ActivityMainBinding;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ActivityMainBinding binding;
-    private AudioRecord audioRecord;
-    private String pcmFilePath;
-    private int bufferSize = 1024;
-    private boolean isRecord = false;
+    private MyAudioRecord audioRecord;
+    //PCM播放实例
+    private AudioTrackManager mAudioTracker;
+    private final String PATH = Environment.getExternalStorageDirectory() + "/_test.pcm";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +44,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{
-                    Manifest.permission.RECORD_AUDIO
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_AUDIO
             }, 0);
         }
+
+        mAudioTracker = new AudioTrackManager(this);
+        audioRecord = new MyAudioRecord();
+
+        audioRecord.setOnAudioFrameCapturedListener(MyAudioRecord::writePCM);
     }
 
     /**
@@ -60,88 +74,45 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 开始录制PCM音频文件
      */
-    @RequiresPermission(value = "android.permission.RECORD_AUDIO")
     public void startRecordPcm(View view) {
-        int frequency = 44100;
-        int channelConfig = AudioFormat.CHANNEL_IN_STEREO;
-        int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-        bufferSize = AudioRecord.getMinBufferSize(frequency, channelConfig, audioEncoding);
-        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                frequency,
-                channelConfig,
-                audioEncoding,
-                bufferSize);
-        pcmFilePath = getPCMFile().getAbsolutePath();
-        isRecord = true;
-        new RecordThread().start();
+        audioRecord.startCapture();
     }
 
     public void stopRecordPcm(View view) {
-        isRecord = false;
+        audioRecord.stopCapture();
     }
 
     private File getPCMFile() {
-        File root = getExternalFilesDir(null);
-        File csvDir = new File(root, "/audio/");
-        if (!csvDir.exists()) {
-            // 创建csv 目录
-            csvDir.mkdir();
-        }
-        return new File(csvDir, "sing.pcm");
+        File root = Environment.getExternalStorageDirectory();
+        return new File(root, "_test.pcm");
     }
 
     private File getMp3File() {
-        File root = getExternalFilesDir(null);
-        File csvDir = new File(root, "/audio/");
-        if (!csvDir.exists()) {
-            // 创建csv 目录
-            csvDir.mkdir();
-        }
-        return new File(csvDir, "sing.mp3");
+        File root = Environment.getExternalStorageDirectory();
+        return new File(root, "_test.mp3");
     }
 
 
-    /**
-     * 录制PCM音频线程
-     */
-    class RecordThread extends Thread {
-        @Override
-        public void run() {
-            audioRecord.startRecording();
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(pcmFilePath);
-                byte[] bytes = new byte[bufferSize];
-                Toast.makeText(MainActivity.this, "录制中", Toast.LENGTH_SHORT).show();
-                while (isRecord) {
-                    audioRecord.read(bytes, 0, bytes.length);
-                    fos.write(bytes, 0, bytes.length);
-                    fos.flush();
-                }
-                Log.d("TAG", "停止录制");
-                audioRecord.stop();
-                fos.flush();
-            } catch (Exception e) {
-                Log.d("TAG", "exception: " + e);
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+    public void playPCM(View view) {
+        mAudioTracker.createAudioTrack(PATH);
+        mAudioTracker.play();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAudioTracker.stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        mAudioTracker.release();
     }
 
 
     public native int pcmToMp3JNI(String pcmPath, String mp3Path, int sampleRate,
                                   int channel, int bitRate);
+
+
 }

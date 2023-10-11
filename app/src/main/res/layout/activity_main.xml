@@ -9,19 +9,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="startRecordPcm"
-        android:text="开始录制pcm" />
+        android:text="开始录制PCM" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="stopRecordPcm"
-        android:text="停止录制pcm" />
+        android:text="停止录制PCM" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="playPCM"
+        android:text="点击播放PCM" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="stopRecordPcm"
+        android:text="停止播放PCM" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="pcm2mp3"
-        android:text="pcm转mp3" />
+        android:text="使用LAME PCM转MP3" />
 
 
 </LinearLayout>
