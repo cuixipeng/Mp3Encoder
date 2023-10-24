@@ -40,21 +40,22 @@ void *playThreadFunc(void *arg) {
         fread(buffer, 1, bufferSize, pcmFile);
         slAudioPlayer->enqueueSample(buffer, bufferSize);
     }
+    return 0;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_phuket_tour_studio_MainActivity_nativePlayPCM(JNIEnv *env, jobject thiz,
-                                                       jstring pcm_path) {
-    const char *_pcmPath = env->GetStringUTFChars(pcm_path, NULL);
-    //如果已经实例化就释放资源
+Java_com_phuket_tour_studio_MainActivity_nativePlayPCM(JNIEnv *env, jclass type, jstring pcmPath_) {
+    //将 Java 传递过来的 String 转为 C 中的 char *
+    const char *_pcmPath = env->GetStringUTFChars(pcmPath_, NULL);
+
+    //如果已经实例化了，就释放资源
     if (slAudioPlayer) {
         slAudioPlayer->release();
         delete slAudioPlayer;
         slAudioPlayer = nullptr;
     }
-
-    //实例化OpenSLAudioPlayer
+    //实例化 OpenSLAudioPlay
     slAudioPlayer = new OpenSLAudioPlay(44100, SAMPLE_FORMAT_16, 1);
     slAudioPlayer->init();
     pcmFile = fopen(_pcmPath, "r");
@@ -62,13 +63,13 @@ Java_com_phuket_tour_studio_MainActivity_nativePlayPCM(JNIEnv *env, jobject thiz
     pthread_t playThread;
     pthread_create(&playThread, nullptr, playThreadFunc, 0);
 
-
-    env->ReleaseStringUTFChars(pcm_path, _pcmPath);
+    env->ReleaseStringUTFChars(pcmPath_, _pcmPath);
 }
+
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_phuket_tour_studio_MainActivity_nativeStopPcm(JNIEnv *env, jclass clazz) {
+Java_com_phuket_tour_studio_MainActivity_nativeStopPcm(JNIEnv *env, jclass type) {
     isPlaying = false;
     if (slAudioPlayer) {
         slAudioPlayer->release();

@@ -124,6 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
     public native void nativePlayPCM(String pcmPath);
 
-    private native static void nativeStopPcm();
+    private native void nativeStopPcm();
 
 }
