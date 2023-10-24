@@ -13,7 +13,7 @@ void playerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
 OpenSLAudioPlay::OpenSLAudioPlay(int sampleRate, int sampleFormat, int channels)
         : mAudioEngine(new AudioEngine()), mPlayerObj(nullptr), mPlayer(nullptr),
           mBufferQueue(nullptr), mEffectSend(nullptr), mVolume(nullptr),
-          mSampleRate((SLmilliHertz) sampleRate * 1000), mSampleFormat(sampleRate),
+          mSampleRate((SLmilliHertz) sampleRate * 1000), mSampleFormat(sampleFormat),
           mChannels(channels), mBufSize(0), mIndex(0) {
     mMutex = PTHREAD_MUTEX_INITIALIZER;
     mBuffers[0] = nullptr;

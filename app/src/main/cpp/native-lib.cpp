@@ -69,7 +69,6 @@ Java_com_phuket_tour_studio_MainActivity_nativePlayPCM(JNIEnv *env, jobject thiz
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_phuket_tour_studio_MainActivity_nativeStopPcm(JNIEnv *env, jclass clazz) {
-    // TODO: implement nativeStopPcm()
     isPlaying = false;
     if (slAudioPlayer) {
         slAudioPlayer->release();
