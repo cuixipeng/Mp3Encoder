@@ -111,8 +111,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void OpenSL_Play_PCM(View view) {
+        nativePlayPCM(PATH);
+    }
+
+    public void OpenSL_Stop_PCM(View view) {
+        nativeStopPcm();
+    }
+
     public native int pcmToMp3JNI(String pcmPath, String mp3Path, int sampleRate,
                                   int channel, int bitRate);
 
+    public native void nativePlayPCM(String pcmPath);
+
+    private native static void nativeStopPcm();
 
 }

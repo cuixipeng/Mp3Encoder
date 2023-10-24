@@ -35,5 +35,17 @@
         android:onClick="pcm2mp3"
         android:text="使用LAME PCM转MP3" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="OpenSL_Play_PCM"
+        android:text="使用OpenSL播放PCM" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="OpenSL_Stop_PCM"
+        android:text="停止OpenSL停止PCM" />
+
 
 </LinearLayout>

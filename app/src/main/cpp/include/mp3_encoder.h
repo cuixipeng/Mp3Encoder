@@ -3,7 +3,7 @@
 
 #include "stdio.h"
 #include "lame/lame.h"
-
+#include "SLES/OpenSLES.h"
 class Mp3Encoder {
 private:
     FILE *pcmFile;

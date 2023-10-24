@@ -1,4 +1,5 @@
 #include "include/mp3_encoder.h"
+#include "opensl/AudioEngine.h"
 #include "lame/lame.h"
 
 Mp3Encoder::Mp3Encoder() {

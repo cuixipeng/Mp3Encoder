@@ -8,12 +8,14 @@ cmake_minimum_required(VERSION 3.22.1)
 # Declares and names the project.
 
 project("lame")
+#音频渲染
+set(OpenSL ${CMAKE_SOURCE_DIR}/opensl)
 
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/include)
-
-
+include_directories(
+        ${CMAKE_SOURCE_DIR}/opensl)
 add_library( # Sets the name of the library.
         lame
         # Sets the library as a shared library.
@@ -21,6 +23,7 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         native-lib.cpp
         mp3_encoder.cpp
+        OpenSLAudioPlay.cpp
         )
 add_library(mp3lame STATIC IMPORTED)
 set_target_properties(mp3lame PROPERTIES IMPORTED_LOCATION
@@ -39,6 +42,7 @@ find_library( # Sets the name of the path variable.
 target_link_libraries( # Specifies the target library.
         lame
         mp3lame
+        OpenSLES
         ${log-lib}
         )
 
