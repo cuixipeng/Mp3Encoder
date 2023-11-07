@@ -1,29 +1,22 @@
 package com.phuket.tour.studio;
 
-import static com.phuket.tour.studio.audio.MyAudioRecord.writePCM;
-
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.phuket.tour.studio.audio.AudioTrackManager;
 import com.phuket.tour.studio.audio.MyAudioRecord;
 import com.phuket.tour.studio.databinding.ActivityMainBinding;
+import com.phuket.tour.studio.video.VideoPlayActivity;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -117,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void OpenSL_Stop_PCM(View view) {
         nativeStopPcm();
+    }
+
+    public void OpenGL_VIDEO(View view) {
+        startActivity(new Intent(this, VideoPlayActivity.class));
     }
 
     public native int pcmToMp3JNI(String pcmPath, String mp3Path, int sampleRate,

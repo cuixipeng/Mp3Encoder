@@ -81,3 +81,6 @@ Java_com_phuket_tour_studio_MainActivity_nativeStopPcm(JNIEnv *env, jclass type)
         pcmFile = nullptr;
     }
 }
+
+
+

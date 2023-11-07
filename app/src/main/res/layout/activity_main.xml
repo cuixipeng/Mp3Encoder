@@ -47,5 +47,9 @@
         android:onClick="OpenSL_Stop_PCM"
         android:text="停止OpenSL停止PCM" />
 
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="OpenGL_VIDEO"
+        android:text="VIDEO" />
 </LinearLayout>
